@@ -15,12 +15,13 @@ import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
 import AppField from "@/components/shared/Form/AppField"
 import AppSubmitButton from "@/components/shared/Form/AppSubmitButton"
+import { registerCustomerSchema, registerProviderSchema } from "@/zod/auth.validation"
 
-type Role = "customer" | "provider"
+type Role = "CUSTOMER" | "PROVIDER"
 
 export default function RegisterForm() {
   const router = useRouter()
-  const [role, setRole] = useState<Role>("customer")
+  const [role, setRole] = useState<Role>("CUSTOMER")
   const [serverError, setServerError] = useState<string | null>(null)
 
   const mutation = useMutation(async (payload: Record<string, unknown>) => {
@@ -50,6 +51,37 @@ export default function RegisterForm() {
     onSubmit: async ({ value }) => {
       setServerError(null)
       try {
+        // validate according to role
+        if (role === "CUSTOMER") {
+          const parsed = registerCustomerSchema.safeParse({
+            name: value.name,
+            email: value.email,
+            password: value.password,
+            role: "CUSTOMER",
+          })
+          if (!parsed.success) {
+            setServerError(parsed.error.issues[0]?.message || "Invalid input")
+            return
+          }
+        } else {
+          const parsed = registerProviderSchema.safeParse({
+            name: value.name,
+            email: value.email,
+            password: value.password,
+            role: "PROVIDER",
+            restaurantName: value.restaurantName,
+            description: value.description,
+            address: value.address,
+            isOpen: !!value.isOpen,
+            openTime: value.openTime || null,
+            closeTime: value.closeTime || null,
+          })
+          if (!parsed.success) {
+            setServerError(parsed.error.issues[0]?.message || "Invalid input")
+            return
+          }
+        }
+
         const payload: Record<string, unknown> = {
           name: value.name,
           email: value.email,
@@ -57,7 +89,7 @@ export default function RegisterForm() {
           role: role,
         }
 
-        if (role === "provider") {
+        if (role === "PROVIDER") {
           payload.restaurantName = value.restaurantName
           payload.description = value.description
           payload.address = value.address
@@ -91,16 +123,16 @@ export default function RegisterForm() {
       <CardContent>
         <div className="mb-4 flex items-center gap-4 justify-center">
           <Toggle
-            pressed={role === "customer"}
-            onClick={() => setRole("customer")}
-            className={role === "customer" ? "bg-primary text-white" : ""}
+            pressed={role === "CUSTOMER"}
+            onClick={() => setRole("CUSTOMER")}
+            className={role === "CUSTOMER" ? "bg-primary text-white" : ""}
           >
             Customer
           </Toggle>
           <Toggle
-            pressed={role === "provider"}
-            onClick={() => setRole("provider")}
-            className={role === "provider" ? "bg-primary text-white" : ""}
+            pressed={role === "PROVIDER"}
+            onClick={() => setRole("PROVIDER")}
+            className={role === "PROVIDER" ? "bg-primary text-white" : ""}
           >
             Provider
           </Toggle>
@@ -132,7 +164,7 @@ export default function RegisterForm() {
             )}
           </form.Field>
 
-          {role === "provider" && (
+          {role === "PROVIDER" && (
             <>
               <form.Field name="restaurantName">
                 {(field) => (
