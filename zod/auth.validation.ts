@@ -22,14 +22,14 @@ export const registerCustomerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   password: loginZodSchema.shape.password,
-  role: z.literal("customer"),
+  role: z.literal("CUSTOMER"),
 });
 
 export const registerProviderSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   password: loginZodSchema.shape.password,
-  role: z.literal("provider"),
+  role: z.literal("PROVIDER"),
   restaurantName: z.string().min(1, "Restaurant name is required"),
   description: z.string().optional(),
   address: z.string().min(1, "Address is required"),

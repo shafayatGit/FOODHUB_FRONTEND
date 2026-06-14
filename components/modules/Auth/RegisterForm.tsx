@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "@tanstack/react-form"
 import {
@@ -11,29 +11,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
 import AppField from "@/components/shared/Form/AppField"
 import AppSubmitButton from "@/components/shared/Form/AppSubmitButton"
-import { registerCustomerSchema, registerProviderSchema } from "@/zod/auth.validation"
+import {
+  registerCustomerSchema,
+  registerProviderSchema,
+  type IRegisterPayload,
+} from "@/zod/auth.validation"
+import {
+  IRegisterActionResult,
+  registerCustomerAction,
+  registerProviderAction,
+} from "@/app/(commonLayout)/(authRouteGroup)/register/_actions"
 
 type Role = "CUSTOMER" | "PROVIDER"
+
+type RegisterFormValues = {
+  name: string
+  email: string
+  password: string
+  restaurantName: string
+  description: string
+  address: string
+}
 
 export default function RegisterForm() {
   const router = useRouter()
   const [role, setRole] = useState<Role>("CUSTOMER")
   const [serverError, setServerError] = useState<string | null>(null)
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect") ?? undefined;
 
-  const mutation = useMutation(async (payload: Record<string, unknown>) => {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL
-    if (!base) throw new Error("API base url missing")
-    const res = await fetch(`${base}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
-    const data = await res.json()
-    return data
+  const { mutateAsync, isPending } = useMutation<IRegisterActionResult, unknown, IRegisterPayload>({
+    mutationFn: async (payload) => {
+      if (payload.role === "CUSTOMER") {
+        return registerCustomerAction(payload, redirectPath)
+      }
+
+      return registerProviderAction(payload, redirectPath)
+    },
   })
 
   const form = useForm({
@@ -44,14 +61,13 @@ export default function RegisterForm() {
       restaurantName: "",
       description: "",
       address: "",
-      isOpen: true,
-      openTime: "",
-      closeTime: "",
     },
     onSubmit: async ({ value }) => {
       setServerError(null)
+
       try {
-        // validate according to role
+        let payload: IRegisterPayload
+
         if (role === "CUSTOMER") {
           const parsed = registerCustomerSchema.safeParse({
             name: value.name,
@@ -59,11 +75,14 @@ export default function RegisterForm() {
             password: value.password,
             role: "CUSTOMER",
           })
+
           if (!parsed.success) {
             setServerError(parsed.error.issues[0]?.message || "Invalid input")
             return
           }
-        } else {
+
+          payload = parsed.data
+        } else if (role === "PROVIDER") {
           const parsed = registerProviderSchema.safeParse({
             name: value.name,
             email: value.email,
@@ -72,41 +91,24 @@ export default function RegisterForm() {
             restaurantName: value.restaurantName,
             description: value.description,
             address: value.address,
-            isOpen: !!value.isOpen,
-            openTime: value.openTime || null,
-            closeTime: value.closeTime || null,
           })
+
           if (!parsed.success) {
             setServerError(parsed.error.issues[0]?.message || "Invalid input")
             return
           }
+
+          payload = parsed.data
         }
 
-        const payload: Record<string, unknown> = {
-          name: value.name,
-          email: value.email,
-          password: value.password,
-          role: role,
-        }
-
-        if (role === "PROVIDER") {
-          payload.restaurantName = value.restaurantName
-          payload.description = value.description
-          payload.address = value.address
-          payload.isOpen = !!value.isOpen
-          payload.openTime = value.openTime || null
-          payload.closeTime = value.closeTime || null
-        }
-
-        const result = await mutation.mutateAsync(payload)
+        const result = await mutateAsync(payload)
 
         if (!result || result.success === false) {
           setServerError(result?.message || "Registration failed")
           return
         }
 
-        // on success, redirect to login
-        router.push('/login')
+        router.push("/login")
       } catch (err: any) {
         setServerError(err?.message || "Registration failed")
       }
@@ -184,32 +186,7 @@ export default function RegisterForm() {
                 )}
               </form.Field>
 
-              <div className="flex gap-4">
-                <form.Field name="isOpen">
-                  {(field) => (
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={field.value as boolean}
-                        onChange={(e) => field.onChange(e.target.checked)}
-                      />
-                      <span>Open now</span>
-                    </label>
-                  )}
-                </form.Field>
-
-                <form.Field name="openTime">
-                  {(field) => (
-                    <AppField field={field} label="Open time" type="time" />
-                  )}
-                </form.Field>
-
-                <form.Field name="closeTime">
-                  {(field) => (
-                    <AppField field={field} label="Close time" type="time" />
-                  )}
-                </form.Field>
-              </div>
+              
             </>
           )}
 
