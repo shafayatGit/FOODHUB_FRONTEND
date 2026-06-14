@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Raleway } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
+import QueryProviders from "@/providers/QueryProvider";
 
 const raleway = Raleway({subsets:['latin'],variable:'--font-sans'})
 
@@ -22,9 +23,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("antialiased", fontMono.variable, "font-sans", raleway.variable)}
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="min-h-full flex flex-col">
+        <QueryProviders> <ThemeProvider>{children}</ThemeProvider></QueryProviders>
       </body>
+
     </html>
   )
 }
