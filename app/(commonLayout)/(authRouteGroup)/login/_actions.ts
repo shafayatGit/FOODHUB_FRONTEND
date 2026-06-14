@@ -46,9 +46,28 @@ export const loginAction = async (
         message: response.message || "Login failed",
       };
     }
+    // console.log("Login Data", response.data)
 
-    const {  token, user } = response.data.data;
+    // Extract token and user from response
+    // response structure: ApiResponse<ILoginResponse>
+    // response.data = ILoginResponse which has: { success, message, data: { token, user } }
+    const loginResponseData = response;
+    
+    if (!loginResponseData) {
+      return {
+        success: false,
+        message: "Invalid response structure from server",
+      };
+    }
 
+    const { token, user } = loginResponseData.data;
+
+    if (!token || !user) {
+      return {
+        success: false,
+        message: "Missing token or user data from server",
+      };
+    }
 
     await setTokenInCookies("better-auth.session_token", token, 24 * 60 * 60); // 1 day in seconds
     // persist role in cookie so server-side proxy/middleware can read it
@@ -64,12 +83,12 @@ export const loginAction = async (
     function getDefaultDashboardRoute(r: UserRole) {
       switch (r) {
         case "ADMIN":
-          return "/admin";
+          return "/admin/dashboard";
         case "PROVIDER":
           return "/provider/dashboard";
         case "CUSTOMER":
         default:
-          return "/orders";
+          return "/dashboard";
       }
     }
 

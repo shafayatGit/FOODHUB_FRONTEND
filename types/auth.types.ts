@@ -1,7 +1,5 @@
 export interface ILoginResponse {
-    success: boolean;
-  message: string;
-  data:{
+
     token: string;
     user: {
       id: string;
@@ -10,7 +8,7 @@ export interface ILoginResponse {
       role: string;
       image: string | null;
     }
-  }
+  
   
 }
 

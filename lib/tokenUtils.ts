@@ -7,5 +7,5 @@ export const setTokenInCookies = async (
 ) => {
 
 
-  await setCookie(name, token, fallbackMaxAgeInSeconds);
+  await setCookie (name, token, fallbackMaxAgeInSeconds);
 };
