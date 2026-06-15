@@ -8,7 +8,6 @@ import { setCookie } from "@/lib/cookieUtils";
 import { ApiErrorResponse } from "@/types/api.types";
 import { ILoginResponse } from "@/types/auth.types";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
-import { redirect } from "next/navigation";
 
 export type ILoginActionSuccess = {
   success: true;

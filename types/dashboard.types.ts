@@ -1,5 +1,3 @@
-import { LucideIcon } from "lucide-react";
-
 export interface NavItem {
   title: string;
   href: string;
@@ -125,3 +123,6 @@ export interface IAdminDashboardData {
       orderCount: number;
     }[];
 }
+
+export type ITopMeal = IAdminDashboardData["topMeals"][number];
+export type ITopProvider = IAdminDashboardData["topProviders"][number];

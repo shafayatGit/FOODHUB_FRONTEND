@@ -27,15 +27,6 @@ import {
 
 type Role = "CUSTOMER" | "PROVIDER"
 
-type RegisterFormValues = {
-  name: string
-  email: string
-  password: string
-  restaurantName: string
-  description: string
-  address: string
-}
-
 export default function RegisterForm() {
   const router = useRouter()
   const [role, setRole] = useState<Role>("CUSTOMER")
@@ -43,7 +34,7 @@ export default function RegisterForm() {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") ?? undefined;
 
-  const { mutateAsync, isPending } = useMutation<IRegisterActionResult, unknown, IRegisterPayload>({
+  const { mutateAsync } = useMutation<IRegisterActionResult, unknown, IRegisterPayload>({
     mutationFn: async (payload) => {
       if (payload.role === "CUSTOMER") {
         return registerCustomerAction(payload, redirectPath)
@@ -99,6 +90,9 @@ export default function RegisterForm() {
           }
 
           payload = parsed.data
+        } else {
+          setServerError("Invalid account type")
+          return
         }
 
         const result = await mutateAsync(payload)
@@ -109,8 +103,9 @@ export default function RegisterForm() {
         }
 
         router.push("/login")
-      } catch (err: any) {
-        setServerError(err?.message || "Registration failed")
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : "Registration failed"
+        setServerError(message)
       }
     },
   })

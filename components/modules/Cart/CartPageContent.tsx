@@ -160,7 +160,7 @@ export default function CartPageContent({ userInfo }: CartPageContentProps) {
                 <span className="text-primary">{formatCurrency(totals.total)}</span>
               </div>
               <Button asChild className="h-10 w-full">
-                <Link href={userInfo ? "/checkout" : "/login?redirect=/cart"}>
+                <Link href={userInfo ? "/checkout" : "/login?redirect=/checkout"}>
                   {userInfo ? "Continue to Checkout" : "Login to Checkout"}
                 </Link>
               </Button>

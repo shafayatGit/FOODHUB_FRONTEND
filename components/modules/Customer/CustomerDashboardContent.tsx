@@ -45,6 +45,12 @@ export default function CustomerDashboardContent({
                 View cart
               </Link>
             </Button>
+            <Button asChild variant="outline">
+              <Link href="/orders">
+                <ShoppingBag className="size-4" />
+                My orders
+              </Link>
+            </Button>
           </div>
         </section>
 
@@ -152,6 +158,9 @@ export default function CustomerDashboardContent({
             <div className="rounded-2xl bg-muted/60 p-3">
               Checkout with your delivery address.
             </div>
+            <Button asChild variant="outline" className="w-full">
+              <Link href="/orders">Track my orders</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>

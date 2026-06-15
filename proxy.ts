@@ -9,9 +9,7 @@ const Role = {
 
 export type RoleType = (typeof Role)[keyof typeof Role]
 
-const PUBLIC_PATHS = ["/", "/home", "/login", "/register"]
-const PUBLIC_PATTERNS = [/^\/meals(\/.*)?$/, /^\/providers(\/.*)?$/]
-const CUSTOMER_PATTERNS = [/^\/cart\/?$/, /^\/checkout\/?$/, /^\/orders(\/.*)?$/, /^\/profile\/?$/]
+const CUSTOMER_PATTERNS = [/^\/dashboard\/?$/, /^\/cart\/?$/, /^\/checkout\/?$/, /^\/orders(\/.*)?$/, /^\/profile\/?$/]
 const PROVIDER_PATTERNS = [/^\/provider(\/.*)?$/]
 const ADMIN_PATTERNS = [/^\/admin(\/.*)?$/]
 
@@ -70,7 +68,6 @@ export function proxy(request: NextRequest) {
   const role = getRoleFromCookie(request)
 
   const isLoginOrRegister = pathname === "/login" || pathname === "/register"
-  const isPublicRoute = PUBLIC_PATHS.includes(pathname) || matches(pathname, PUBLIC_PATTERNS)
   const isProtectedRoute = matches(pathname, CUSTOMER_PATTERNS) || matches(pathname, PROVIDER_PATTERNS) || matches(pathname, ADMIN_PATTERNS)
 
   if (isLoginOrRegister && sessionToken) {
@@ -98,6 +95,7 @@ export const config = {
     "/providers/:path*",
     "/login",
     "/register",
+    "/dashboard",
     "/cart",
     "/checkout",
     "/orders/:path*",

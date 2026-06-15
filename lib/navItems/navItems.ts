@@ -78,9 +78,9 @@ export function getNavItemsByRole(role: string): NavSection[] {
       title: "Explore",
       items: [
         {
-          title: "Home",
-          href: "/",
-          icon: "house",
+          title: "Dashboard",
+          href: "/dashboard",
+          icon: "layout-dashboard",
         },
         {
           title: "Meals",
