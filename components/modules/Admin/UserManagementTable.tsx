@@ -243,12 +243,16 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
                      <div className="flex justify-end gap-2">
   <StatusAction status="ACTIVE" user={user} />
 
-  <DeleteUserAction
+  {
+    user.role !== "ADMIN" && (
+      <DeleteUserAction
     user={user}
     onDeleted={() => {
       window.location.reload();
     }}
   />
+    )
+  }
 </div>
                     </TableCell>
                   </TableRow>
@@ -298,12 +302,16 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
               <div className="flex justify-end gap-2">
   <StatusAction status="ACTIVE" user={user} />
 
-  <DeleteUserAction
+  {
+    user.role !== "ADMIN" && (
+      <DeleteUserAction
     user={user}
     onDeleted={() => {
       window.location.reload();
     }}
   />
+    )
+  }
 </div>
             </article>
           ))
