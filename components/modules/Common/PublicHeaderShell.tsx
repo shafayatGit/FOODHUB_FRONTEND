@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -11,38 +11,39 @@ export default function PublicHeaderShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isHomePage = pathname === "/";
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    const updateHeaderBackground = () => {
-      const scrollTop =
-        window.scrollY ||
-        document.documentElement.scrollTop ||
-        document.body.scrollTop ||
-        0;
+  const updateHeaderBackground = useCallback(() => {
+    const scrollTop =
+      window.scrollY ||
+      document.documentElement.scrollTop ||
+      document.body.scrollTop ||
+      0;
 
-      setHasScrolled(scrollTop > 20);
-    };
-
-    let frameId = 0;
-    const onScroll = () => {
-      window.cancelAnimationFrame(frameId);
-      frameId = window.requestAnimationFrame(updateHeaderBackground);
-    };
-
-    updateHeaderBackground();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => {
-      window.cancelAnimationFrame(frameId);
-      window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("scroll", onScroll);
-    };
+    setHasScrolled(scrollTop > 20);
   }, []);
 
-  const isScrolled = !isHomePage || hasScrolled;
+  useEffect(() => {
+    setIsMounted(true);
+    
+    updateHeaderBackground();
+    window.addEventListener("scroll", updateHeaderBackground, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", updateHeaderBackground);
+    };
+  }, [updateHeaderBackground]);
+
+  // On the server and during initial hydration, isMounted is false.
+  // We want to ensure that the initial render matches the server.
+  // If pathname is null during hydration, we should default to a state that matches the server.
+  const isHomePage = pathname === "/";
+  
+  // During hydration, hasScrolled is always false.
+  // We only want hasScrolled to affect the UI after the component has mounted
+  // to prevent hydration mismatches if the user has already scrolled.
+  const isScrolled = !isHomePage || (isMounted && hasScrolled);
 
   return (
     <header

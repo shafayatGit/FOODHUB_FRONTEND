@@ -46,7 +46,9 @@ export default function PublicUserControls({ userInfo }: PublicUserControlsProps
 
   return (
     <div className="hidden items-center gap-2 md:flex">
-      <Button
+      {
+        userInfo.role === "CUSTOMER" && (
+          <Button
         asChild
         variant="outline"
         className={`relative ${transparentHeaderButtonClassName}`}
@@ -61,6 +63,8 @@ export default function PublicUserControls({ userInfo }: PublicUserControlsProps
           ) : null}
         </Link>
       </Button>
+        )
+      }
       <Button
         variant="outline"
         className={transparentHeaderButtonClassName}

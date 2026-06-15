@@ -36,7 +36,7 @@ function matches(pathname: string, patterns: RegExp[]) {
 function roleDefaultRedirect(role: RoleType | null) {
   switch (role) {
     case Role.ADMIN:
-      return "/admin"
+      return "/admin/dashboard"
     case Role.PROVIDER:
       return "/provider/dashboard"
     case Role.CUSTOMER:
