@@ -7,6 +7,7 @@ import { getMeals } from "@/services/meals.services";
 import HeroSection from "@/components/shared/hero";
 import FeaturedProviders from "@/components/modules/Providers/FeaturedProviders";
 import ProviderCard from "@/components/modules/Providers/ProviderCard";
+import { AppDownloadCta } from "@/components/modules/Common/DownloadApp";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +45,12 @@ export default async function Page() {
             </div>
           )}
         </section>
+
+              <div>
+                <p className="text-sm font-medium text-primary">Mobile App</p>
+                <h2 className="mt-1 text-2xl font-semibold tracking-normal">Download the app</h2>
+              </div>
+        <AppDownloadCta />
       </div>
     </section>
   )

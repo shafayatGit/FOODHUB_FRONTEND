@@ -11,6 +11,9 @@ export default function PublicFooter() {
         </div>
         <p>Fresh menus from local providers, ready when hunger is.</p>
         <div className="flex items-center gap-4">
+          <Link href="/providers" className="hover:text-foreground">
+            Restaurants
+          </Link>
           <Link href="/meals" className="hover:text-foreground">
             Meals
           </Link>

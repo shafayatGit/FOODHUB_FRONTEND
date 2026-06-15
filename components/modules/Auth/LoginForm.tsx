@@ -107,7 +107,6 @@ const LoginForm = () => {
                 // type="text"
                 placeholder="Enter your password"
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="cursor-pointer"
                 append={
                   <Button
                     type="button"
