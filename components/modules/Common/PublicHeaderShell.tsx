@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
@@ -9,30 +10,49 @@ export default function PublicHeaderShell({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
   const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
     const updateHeaderBackground = () => {
-      setHasScrolled(window.scrollY > 0);
+      const scrollTop =
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0;
+
+      setHasScrolled(scrollTop > 20);
     };
 
-    const timeoutId = window.setTimeout(updateHeaderBackground, 0);
-    window.addEventListener("scroll", updateHeaderBackground, { passive: true });
+    let frameId = 0;
+    const onScroll = () => {
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(updateHeaderBackground);
+    };
+
+    updateHeaderBackground();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
-      window.clearTimeout(timeoutId);
-      window.removeEventListener("scroll", updateHeaderBackground);
+      window.cancelAnimationFrame(frameId);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("scroll", onScroll);
     };
   }, []);
+
+  const isScrolled = !isHomePage || hasScrolled;
 
   return (
     <header
       className={cn(
-        "sticky inset-x-0 top-0 z-40 border-b border-transparent backdrop-blur transition-colors duration-200",
-        hasScrolled
-          ? "border-border bg-background"
-          : "bg-transparent supports-[backdrop-filter]:bg-transparent",
+        "group/site-header fixed inset-x-0 top-0 z-40 border-b backdrop-blur-xl transition-[background-color,border-color,box-shadow,color] duration-300",
+        isScrolled
+          ? "border-border bg-background/95 text-foreground shadow-sm"
+          : "border-white/10 bg-transparent text-white shadow-none",
       )}
+      data-scrolled={isScrolled}
     >
       {children}
     </header>

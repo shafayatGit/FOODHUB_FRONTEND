@@ -9,7 +9,7 @@ export default function CommonLayout({
   return (
     <div className="flex min-h-svh flex-col">
       <PublicHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pt-16">{children}</main>
       <PublicFooter />
     </div>
   )

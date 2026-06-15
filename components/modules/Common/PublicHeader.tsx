@@ -18,6 +18,7 @@ import { logoutAction, getUserInfo } from "@/services/auth.services";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/meals", label: "Meals" },
+  { href: "/providers", label: "Restaurants" },
 ];
 
 export default async function PublicHeader() {
@@ -35,7 +36,12 @@ export default async function PublicHeader() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
-            <Button key={link.href} asChild variant="ghost">
+            <Button
+              key={link.href}
+              asChild
+              variant="ghost"
+              className="group-data-[scrolled=false]/site-header:text-white group-data-[scrolled=false]/site-header:hover:bg-white/10 group-data-[scrolled=false]/site-header:hover:text-white"
+            >
               <Link href={link.href}>{link.label}</Link>
             </Button>
           ))}
@@ -45,7 +51,12 @@ export default async function PublicHeader() {
 
         <Sheet>
           <SheetTrigger asChild>
-            <Button className="md:hidden" size="icon" variant="outline" aria-label="Open navigation">
+            <Button
+              className="md:hidden group-data-[scrolled=false]/site-header:border-white/25 group-data-[scrolled=false]/site-header:bg-white/5 group-data-[scrolled=false]/site-header:text-white group-data-[scrolled=false]/site-header:hover:bg-white/10"
+              size="icon"
+              variant="outline"
+              aria-label="Open navigation"
+            >
               <Menu className="size-4" />
             </Button>
           </SheetTrigger>

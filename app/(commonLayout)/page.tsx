@@ -1,12 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, BadgeCheck, Clock3, Store, UtensilsCrossed } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import MealCard from "@/components/modules/Meals/MealCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { getMeals } from "@/services/meals.services";
 import HeroSection from "@/components/shared/hero";
+import FeaturedProviders from "@/components/modules/Providers/FeaturedProviders";
+import ProviderCard from "@/components/modules/Providers/ProviderCard";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +14,10 @@ export default async function Page() {
   const { meals } = await getMeals({ limit: 3 });
 
   return (
-    <section className="">
+    <section className="-mt-16">
         <HeroSection />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <FeaturedProviders />
 
         <section className="space-y-4 py-10 min-h-screen">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
