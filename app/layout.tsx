@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import QueryProviders from "@/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { CartProvider } from "@/components/modules/Cart/CartProvider";
 
 const raleway = Raleway({subsets:['latin'],variable:'--font-sans'})
 
@@ -27,7 +28,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <QueryProviders>
           <ThemeProvider>
-            {children}
+            <CartProvider>{children}</CartProvider>
             <Toaster richColors />
           </ThemeProvider>
         </QueryProviders>

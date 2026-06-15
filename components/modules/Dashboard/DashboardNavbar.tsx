@@ -8,12 +8,20 @@ import DashboardNavbarContent from "./DashboardNavbarContent";
 
 const DashboardNavbar = async () => {
   const userInfo = await getUserInfo();
-  const navItems: NavSection[] = getNavItemsByRole(userInfo.role);
+  const role = userInfo?.role ?? "CUSTOMER";
+  const navItems: NavSection[] = getNavItemsByRole(role);
 
-  const dashboardHome = getDefaultDashboardRoute(userInfo.role);
+  const dashboardHome = getDefaultDashboardRoute(role);
   return (
     <DashboardNavbarContent
-      userInfo={userInfo}
+      userInfo={
+        userInfo ?? {
+          id: "",
+          name: "Customer",
+          email: "",
+          role: "CUSTOMER",
+        }
+      }
       navItems={navItems}
       dashboardHome={dashboardHome}
     />

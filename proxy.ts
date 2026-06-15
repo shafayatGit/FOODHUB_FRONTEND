@@ -42,7 +42,7 @@ function roleDefaultRedirect(role: RoleType | null) {
     case Role.PROVIDER:
       return "/provider/dashboard"
     case Role.CUSTOMER:
-      return "/orders"
+      return "/dashboard"
     default:
       return "/login"
   }

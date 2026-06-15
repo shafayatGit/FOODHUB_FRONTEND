@@ -1,11 +1,16 @@
+import PublicFooter from "@/components/modules/Common/PublicFooter";
+import PublicHeader from "@/components/modules/Common/PublicHeader";
+
 export default function CommonLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <div className="flex min-h-svh flex-col">
+      <PublicHeader />
+      <main className="flex-1">{children}</main>
+      <PublicFooter />
+    </div>
   )
 }
