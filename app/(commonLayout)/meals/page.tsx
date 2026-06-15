@@ -1,5 +1,5 @@
 import MealFilters from "@/components/modules/Meals/MealFilters";
-import MealsGrid from "@/components/modules/Meals/MealsGrid";
+import MealsGridWithSort from "@/components/modules/Meals/MealsGridWithSort";
 import AppPagination from "@/components/shared/AppPagination";
 import { getMeals } from "@/services/meals.services";
 
@@ -26,6 +26,7 @@ const MealsPage = async ({ searchParams }: MealsPageProps) => {
     dietaryPreference: getParam(params, "dietaryPreference"),
     minPrice: getParam(params, "minPrice"),
     maxPrice: getParam(params, "maxPrice"),
+    sortBy: getParam(params, "sortBy") ?? "newest",
   };
   const { meals, meta } = await getMeals(currentParams);
 
@@ -54,8 +55,9 @@ const MealsPage = async ({ searchParams }: MealsPageProps) => {
           dietaryPreference={currentParams.dietaryPreference}
           minPrice={currentParams.minPrice}
           maxPrice={currentParams.maxPrice}
+          sortBy={currentParams.sortBy}
         />
-        <MealsGrid meals={meals} />
+        <MealsGridWithSort meals={meals} sortBy={currentParams.sortBy} />
         {meta && <AppPagination meta={meta} />}
       </div>
     </section>

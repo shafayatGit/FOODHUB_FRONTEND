@@ -17,7 +17,7 @@ export const loginZodSchema = z.object({
 
 export type ILoginPayload = z.infer<typeof loginZodSchema>;
 
-// Registration schemas
+// Registration schemas (for JSON validation)
 export const registerCustomerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
@@ -43,3 +43,26 @@ export const registerSchema = z.union([registerCustomerSchema, registerProviderS
 export type IRegisterCustomerPayload = z.infer<typeof registerCustomerSchema>;
 export type IRegisterProviderPayload = z.infer<typeof registerProviderSchema>;
 export type IRegisterPayload = z.infer<typeof registerSchema>;
+
+// FormData types for file uploads
+export interface IRegisterCustomerFormData {
+  name: string;
+  email: string;
+  password: string;
+  role: "CUSTOMER";
+  image?: File;
+}
+
+export interface IRegisterProviderFormData {
+  name: string;
+  email: string;
+  password: string;
+  role: "PROVIDER";
+  restaurantName: string;
+  description?: string;
+  address: string;
+  isOpen?: boolean;
+  openTime?: string;
+  closeTime?: string;
+  image?: File;
+}

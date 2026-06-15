@@ -2,6 +2,9 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { httpClient } from "@/lib/axios/httpClient";
+import type { UserInfo } from "@/types/user.types";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -13,7 +16,7 @@ export async function getUserInfo() {
   try {
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("better-auth.session_token")?.value;
-    // console.log(`SessionToken in getUserInfo: ${sessionToken}`); // Debug log
+
 
     if (!sessionToken) {
       return null;
@@ -38,6 +41,45 @@ export async function getUserInfo() {
   } catch (error) {
     console.error("Error fetching user info:", error);
     return null;
+  }
+}
+
+export async function updateUserProfile(data: {
+  name?: string;
+  image?: File;
+}): Promise<{ success: boolean; message: string; data?: UserInfo }> {
+  try {
+    // Create FormData for file upload support
+    const formData = new FormData();
+    
+    if (data.name) {
+      formData.append("name", data.name);
+    }
+    
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
+    const response = await httpClient.patch<UserInfo>("/auth/me", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    revalidatePath("/profile");
+    revalidatePath("/dashboard");
+    
+    return {
+      success: true,
+      message: "Profile updated successfully.",
+      data: response?.data,
+    };
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    return {
+      success: false,
+      message: "Failed to update profile.",
+    };
   }
 }
 

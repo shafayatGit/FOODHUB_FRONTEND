@@ -19,6 +19,7 @@ export interface Meal {
   isAvailable: boolean;
   providerId: string;
   categoryId: string;
+  imageUrl?: string | null;
   provider?: ProviderSummary;
   category?: Category;
   reviews?: Review[];

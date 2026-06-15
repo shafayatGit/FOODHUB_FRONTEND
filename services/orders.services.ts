@@ -68,3 +68,20 @@ export async function createCustomerOrders(
     };
   }
 }
+
+export async function cancelOrder(orderId: string): Promise<{ success: boolean; message: string }> {
+  try {
+    await httpClient.patch(`/orders/${orderId}/cancel`);
+    revalidatePath("/orders");
+    return {
+      success: true,
+      message: "Order cancelled successfully.",
+    };
+  } catch (error) {
+    console.error(error, "From Cancel Order Server Action");
+    return {
+      success: false,
+      message: "Failed to cancel order. Please try again.",
+    };
+  }
+}

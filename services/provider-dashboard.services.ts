@@ -78,8 +78,8 @@ export async function updateOrderStatus(
   status: OrderStatus
 ): Promise<{ success: boolean; message: string }> {
   try {
-    // Attempting backend PATCH if available/supported
-    await httpClient.patch(`/orders/${orderId}`, { status });
+    // Attempting backend PATCH to the correct endpoint
+    await httpClient.patch(`/orders/${orderId}/status`, { status });
     revalidatePath("/provider/orders");
     revalidatePath("/provider/dashboard");
     return {
@@ -97,7 +97,7 @@ export async function updateOrderStatus(
 }
 
 /**
- * Create a new meal menu item
+ * Create a new meal menu item with optional image upload
  */
 export async function createProviderMeal(data: {
   title: string;
@@ -106,9 +106,30 @@ export async function createProviderMeal(data: {
   dietaryPreference: string;
   categoryId: string;
   isAvailable?: boolean;
+  image?: File;
 }): Promise<{ success: boolean; message: string; data?: Meal }> {
   try {
-    const response = await httpClient.post<Meal>("/meals", data);
+    // Create FormData to support image upload
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("price", String(data.price));
+    formData.append("dietaryPreference", data.dietaryPreference);
+    formData.append("categoryId", data.categoryId);
+    if (data.isAvailable !== undefined) {
+      formData.append("isAvailable", String(data.isAvailable));
+    }
+    
+    // Add image if provided
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
+    const response = await httpClient.post<Meal>("/meals", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     revalidatePath("/provider/meals");
     revalidatePath("/provider/dashboard");
     return {

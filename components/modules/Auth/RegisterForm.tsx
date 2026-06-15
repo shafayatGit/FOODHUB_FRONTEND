@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "@tanstack/react-form"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Upload, X } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -21,6 +21,8 @@ import {
   registerCustomerSchema,
   registerProviderSchema,
   type IRegisterPayload,
+  type IRegisterCustomerFormData,
+  type IRegisterProviderFormData,
 } from "@/zod/auth.validation"
 import { handleAxiosError } from "@/lib/utils"
 import {
@@ -36,16 +38,18 @@ export default function RegisterForm() {
   const [role, setRole] = useState<Role>("CUSTOMER")
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get("redirect") ?? undefined;
 
-  const { mutateAsync } = useMutation<IRegisterActionResult, unknown, IRegisterPayload>({
+  const { mutateAsync } = useMutation<IRegisterActionResult, unknown, IRegisterCustomerFormData | IRegisterProviderFormData>({
     mutationFn: async (payload) => {
       if (payload.role === "CUSTOMER") {
-        return registerCustomerAction(payload, redirectPath)
+        return registerCustomerAction(payload as IRegisterCustomerFormData, redirectPath)
       }
 
-      return registerProviderAction(payload, redirectPath)
+      return registerProviderAction(payload as IRegisterProviderFormData, redirectPath)
     },
   })
 
@@ -62,7 +66,7 @@ export default function RegisterForm() {
       setServerError(null)
 
       try {
-        let payload: IRegisterPayload
+        let payload: IRegisterCustomerFormData | IRegisterProviderFormData
 
         if (role === "CUSTOMER") {
           const parsed = registerCustomerSchema.safeParse({
@@ -77,7 +81,10 @@ export default function RegisterForm() {
             return
           }
 
-          payload = parsed.data
+          payload = {
+            ...parsed.data,
+            image: imageFile || undefined,
+          } as IRegisterCustomerFormData
         } else if (role === "PROVIDER") {
           const parsed = registerProviderSchema.safeParse({
             name: value.name,
@@ -94,7 +101,10 @@ export default function RegisterForm() {
             return
           }
 
-          payload = parsed.data
+          payload = {
+            ...parsed.data,
+            image: imageFile || undefined,
+          } as IRegisterProviderFormData
         } else {
           setServerError("Invalid account type")
           return
@@ -113,6 +123,38 @@ export default function RegisterForm() {
       }
     },
   })
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setServerError("Please select a valid image file")
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setServerError("Image size must be less than 5MB")
+      return
+    }
+
+    setImageFile(file)
+    setServerError(null)
+
+    // Create preview
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const clearImage = () => {
+    setImageFile(null)
+    setImagePreview(null)
+  }
 
   return (
     <Card className="w-full max-w-lg mx-auto shadow-md">
@@ -221,6 +263,45 @@ export default function RegisterForm() {
               </form.Field>
             </>
           )}
+
+          {/* Image Upload Section */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">
+              Profile Image <span className="text-muted-foreground">(Optional)</span>
+            </label>
+            
+            {imagePreview && (
+              <div className="relative w-full h-32 rounded-lg overflow-hidden border border-muted-foreground/20">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={clearImage}
+                  className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+            )}
+
+            <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-muted-foreground/30 rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                <Upload className="size-5 text-muted-foreground mb-1" />
+                <p className="text-xs text-muted-foreground">
+                  {imageFile ? imageFile.name : "Click to upload or drag"}
+                </p>
+              </div>
+              <input
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </label>
+          </div>
 
           {serverError && (
             <Alert variant="destructive">

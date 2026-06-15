@@ -46,7 +46,6 @@ export const loginAction = async (
         message: response.message || "Login failed",
       };
     }
-    // console.log("Login Data", response.data)
 
     // Extract token and user from response
     // response structure: ApiResponse<ILoginResponse>

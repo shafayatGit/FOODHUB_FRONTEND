@@ -24,7 +24,7 @@ export default function MealCard({ meal }: MealCardProps) {
     <Card className="h-full border-0 shadow-sm ring-1 ring-foreground/5">
       <div className="relative aspect-[4/3] overflow-hidden">
         <Image
-          src={getMealImage(meal)}
+          src={meal.imageUrl ? meal.imageUrl : getMealImage(meal)}
           alt={meal.title}
           fill
           sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"

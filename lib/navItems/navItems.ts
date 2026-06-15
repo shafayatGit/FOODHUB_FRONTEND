@@ -25,21 +25,7 @@ export function getNavItemsByRole(role: string): NavSection[] {
           },
         ],
       },
-      {
-        title: "Account",
-        items: [
-          {
-            title: "Profile",
-            href: "/profile",
-            icon: "user",
-          },
-          {
-            title: "Settings",
-            href: "/settings",
-            icon: "settings",
-          },
-        ],
-      },
+      
     ];
   }
 
@@ -78,9 +64,9 @@ export function getNavItemsByRole(role: string): NavSection[] {
       title: "Explore",
       items: [
         {
-          title: "Dashboard",
-          href: "/dashboard",
-          icon: "layout-dashboard",
+          title: "Home",
+          href: "/",
+          icon: "home",
         },
         {
           title: "Meals",
@@ -109,15 +95,6 @@ export function getNavItemsByRole(role: string): NavSection[] {
         },
       ],
     },
-    {
-      title: "Account",
-      items: [
-        {
-          title: "Profile",
-          href: "/profile",
-          icon: "user",
-        },
-      ],
-    },
+    
   ];
 }

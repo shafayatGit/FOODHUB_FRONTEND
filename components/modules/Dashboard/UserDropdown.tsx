@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { UserInfo } from "@/types/user.types";
 import { logoutAction } from "@/services/auth.services";
 import { Key, LogOut, User } from "lucide-react";
@@ -19,16 +20,33 @@ interface UserDropdownProps {
   userInfo: UserInfo;
 }
 
+const getProfilePath = (role: string) => {
+  switch (role?.toUpperCase()) {
+    case "PROVIDER":
+      return "/my-profile";
+    case "ADMIN":
+      return "/my-profile";
+    default:
+      return "/my-profile";
+  }
+};
+
 const UserDropdown = ({ userInfo }: UserDropdownProps) => {
   const [isPending, startTransition] = useTransition();
+  const profilePath = getProfilePath(userInfo.role);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant={"outline"} size={"icon"} className="rounded-full">
-          <span className="text-sm font-semibold">
-            {userInfo.name.charAt(0).toUpperCase()}
-          </span>
+          <Avatar className="size-8">
+            {userInfo.image && (
+              <AvatarImage src={userInfo.image} alt={userInfo.name} />
+            )}
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+              {userInfo.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
         </Button>
       </DropdownMenuTrigger>
 
@@ -48,16 +66,9 @@ const UserDropdown = ({ userInfo }: UserDropdownProps) => {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
-          <Link className="flex items-center" href={"/my-profile"}>
+          <Link className="flex items-center" href={profilePath}>
             <User className="mr-2 h-4 w-4" />
             My Profile
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem>
-          <Link className="flex items-center" href={"/change-password"}>
-            <Key className="mr-2 h-4 w-4" />
-            Change Password
           </Link>
         </DropdownMenuItem>
 

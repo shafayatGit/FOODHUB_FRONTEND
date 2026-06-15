@@ -9,15 +9,15 @@ export interface ILoginResponse {
     } 
 }
 
-export type UserRole = "ADMIN" | "DOCTOR" | "PATIENT";
+export type UserRole = "ADMIN" | "CUSTOMER" | "PROVIDER";
 
-
- export interface IRegisterResponse{
-     id: string,
-    name: string,
-    email: string,
-    role: UserRole,
-    createdAt: string,
-    token: string,
+export interface IRegisterResponse {
+    id: string;
+    name: string;
+    email: string;
+    role: UserRole;
+    image?: string | null;
+    createdAt: string;
+    token: string;
 }
   

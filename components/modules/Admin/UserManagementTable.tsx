@@ -1,5 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Card,
   CardContent,
@@ -17,10 +30,12 @@ import {
 } from "@/components/ui/table";
 import {
   deleteAdminUser,
+  deleteUser,
   updateAdminUserStatus,
 } from "@/services/admin-users.services";
 import type { AdminUser, AdminUserStatus } from "@/types/admin-user.types";
 import { CheckCircle2, ShieldCheck, UserCog, UserX } from "lucide-react";
+import { DeleteUserAction } from "./deleteUser";
 
 interface UserManagementTableProps {
   users: AdminUser[];
@@ -48,11 +63,26 @@ function formatDate(date?: string) {
     return "Not available";
   }
 
-  return new Intl.DateTimeFormat("en", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(parsedDate);
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  const day = String(parsedDate.getUTCDate()).padStart(2, "0");
+  const month = monthNames[parsedDate.getUTCMonth()];
+  const year = parsedDate.getUTCFullYear();
+
+  return `${day} ${month} ${year}`;
 }
 
 function StatusAction({
@@ -64,27 +94,50 @@ function StatusAction({
 }) {
   const isActiveAction = status === "ACTIVE";
   const isCurrentStatus = user.status === status;
-  const action = isActiveAction ? updateAdminUserStatus : deleteAdminUser;
+
+  if (!isActiveAction) {
+    return null;
+  }
 
   return (
-    <form action={action}>
+    <form action={updateAdminUserStatus}>
       <input type="hidden" name="userId" value={user.id} />
-      {isActiveAction && <input type="hidden" name="status" value={status} />}
+      <input type="hidden" name="status" value={status} />
       <Button
         type="submit"
         size="sm"
-        variant={isActiveAction ? "outline" : "destructive"}
+        variant="outline"
         disabled={isCurrentStatus}
         className="w-full justify-start sm:w-auto"
       >
-        {isActiveAction ? (
-          <CheckCircle2 className="size-4" />
-        ) : (
-          <UserX className="size-4" />
-        )}
-        {isActiveAction ? "Activate" : "Suspend"}
+        <CheckCircle2 className="size-4" />
+        Activate
       </Button>
     </form>
+  );
+}
+
+function SuspendUserAction({
+  user,
+  onConfirm,
+}: {
+  user: AdminUser;
+  onConfirm: (user: AdminUser) => void;
+}) {
+  const isDisabled = user.status === "SUSPENDED";
+
+  return (
+    <Button
+      type="button"
+      size="sm"
+      variant="destructive"
+      disabled={isDisabled}
+      onClick={() => onConfirm(user)}
+      className="w-full justify-start sm:w-auto"
+    >
+      <UserX className="size-4" />
+      Suspend
+    </Button>
   );
 }
 
@@ -116,6 +169,8 @@ function UserBadges({ user }: { user: AdminUser }) {
 }
 
 const UserManagementTable = ({ users }: UserManagementTableProps) => {
+
+
   return (
     <section className="mx-auto max-w-7xl space-y-4 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -151,7 +206,7 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="min-w-[260px]">User</TableHead>
+                <TableHead className="min-w-65">User</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Joined</TableHead>
@@ -185,10 +240,16 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
                       {formatDate(user.createdAt)}
                     </TableCell>
                     <TableCell>
-                      <div className="flex justify-end gap-2">
-                        <StatusAction status="ACTIVE" user={user} />
-                        <StatusAction status="SUSPENDED" user={user} />
-                      </div>
+                     <div className="flex justify-end gap-2">
+  <StatusAction status="ACTIVE" user={user} />
+
+  <DeleteUserAction
+    user={user}
+    onDeleted={() => {
+      window.location.reload();
+    }}
+  />
+</div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -234,10 +295,16 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
                 </div>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <StatusAction status="ACTIVE" user={user} />
-                <StatusAction status="SUSPENDED" user={user} />
-              </div>
+              <div className="flex justify-end gap-2">
+  <StatusAction status="ACTIVE" user={user} />
+
+  <DeleteUserAction
+    user={user}
+    onDeleted={() => {
+      window.location.reload();
+    }}
+  />
+</div>
             </article>
           ))
         ) : (
@@ -246,6 +313,7 @@ const UserManagementTable = ({ users }: UserManagementTableProps) => {
           </div>
         )}
       </div>
+ 
     </section>
   );
 };

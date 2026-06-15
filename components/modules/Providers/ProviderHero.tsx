@@ -26,10 +26,11 @@ function formatTime(value?: string) {
 
 export default function ProviderHero({ provider }: ProviderHeroProps) {
   return (
+
     <section className="overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-foreground/5">
       <div className="relative min-h-[260px]">
         <Image
-          src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1600&q=80"
+          src={provider.user?.image || "https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=1600&q=80"}
           alt={provider.restaurantName}
           fill
           sizes="(min-width: 1024px) 1200px, 100vw"
@@ -72,7 +73,19 @@ export default function ProviderHero({ provider }: ProviderHeroProps) {
 
       {provider.user ? (
         <div className="flex items-center gap-3 border-t p-4 text-sm text-muted-foreground">
-          <Store className="size-4 text-primary" />
+          {provider.user.image ? (
+            <Image
+              src={provider.user.image}
+              alt={`${provider.user.name}'s profile picture`}
+              width={32}
+              height={32}
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+              {provider.user.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           Managed by {provider.user.name} · {provider.user.email}
         </div>
       ) : null}

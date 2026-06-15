@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { ArrowLeft, Clock3, MapPin, ReceiptText, Store, Utensils } from "lucide-react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { ArrowLeft, Clock3, MapPin, ReceiptText, Store, Utensils, X } from "lucide-react";
 
 import { formatCurrency } from "@/components/modules/Meals/meal-helpers";
 import { formatOrderDate, OrderStatusBadge } from "@/components/modules/Orders/order-ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { cancelOrder } from "@/services/orders.services";
 import type { CustomerOrder } from "@/types/order.types";
 
 interface OrderDetailsProps {
@@ -16,6 +21,19 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
   const mealTitle = order.meal?.title ?? "Meal item";
   const providerName = order.provider?.restaurantName ?? "Provider";
   const total = order.totalAmount + order.deliveryFee;
+  const [isPending, startTransition] = useTransition();
+  const canCancel = order.status === "PLACED";
+
+  const handleCancelOrder = () => {
+    startTransition(async () => {
+      const result = await cancelOrder(order.id);
+      if (result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    });
+  };
 
   return (
     <section className="bg-muted/30">
@@ -38,7 +56,21 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
                 {order.id}
               </p>
             </div>
-            <OrderStatusBadge status={order.status} />
+            <div className="flex flex-col items-end gap-3">
+              <OrderStatusBadge status={order.status} />
+              {canCancel && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleCancelOrder}
+                  disabled={isPending}
+                  className="w-full sm:w-auto"
+                >
+                  <X className="size-4" />
+                  {isPending ? "Cancelling..." : "Cancel Order"}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 

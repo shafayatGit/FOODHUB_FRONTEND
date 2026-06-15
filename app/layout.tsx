@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import QueryProviders from "@/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/components/modules/Cart/CartProvider";
+import { UserProvider } from "@/providers/UserProvider";
+import { getUserInfo } from "@/services/auth.services";
 
 const raleway = Raleway({subsets:['latin'],variable:'--font-sans'})
 
@@ -14,11 +16,13 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const userInfo = await getUserInfo();
+
   return (
     <html
       lang="en"
@@ -28,7 +32,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <QueryProviders>
           <ThemeProvider>
-            <CartProvider>{children}</CartProvider>
+            <UserProvider userInfo={userInfo}>
+              <CartProvider>{children}</CartProvider>
+            </UserProvider>
             <Toaster richColors />
           </ThemeProvider>
         </QueryProviders>

@@ -12,6 +12,7 @@ import {
   X,
   PlusCircle,
   HelpCircle,
+  Upload,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,8 @@ export default function ProviderMealsContent({
   const [categoryId, setCategoryId] = useState("");
   const [dietaryPreference, setDietaryPreference] = useState("Non-Veg");
   const [isAvailable, setIsAvailable] = useState(true);
+  const [mealImage, setMealImage] = useState<File | null>(null);
+  const [mealImagePreview, setMealImagePreview] = useState<string | null>(null);
 
   // Edit Meal Dialog States
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
@@ -120,6 +123,39 @@ export default function ProviderMealsContent({
     setIsEditDialogOpen(true);
   };
 
+  // Handle image upload
+  const handleMealImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    setMealImage(file);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setMealImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Clear meal image
+  const clearMealImage = () => {
+    setMealImage(null);
+    setMealImagePreview(null);
+  };
+
   // Submit Add Meal
   const handleAddMealSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,6 +172,7 @@ export default function ProviderMealsContent({
         categoryId,
         dietaryPreference,
         isAvailable,
+        image: mealImage || undefined,
       };
 
       const res = await createProviderMeal(payload);
@@ -148,6 +185,7 @@ export default function ProviderMealsContent({
         setCategoryId("");
         setDietaryPreference("Non-Veg");
         setIsAvailable(true);
+        clearMealImage();
       } else {
         toast.error(res.message);
       }
@@ -295,6 +333,44 @@ export default function ProviderMealsContent({
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+
+              {/* Image Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="meal-image">Meal Image <span className="text-muted-foreground">(Optional)</span></Label>
+                
+                {mealImagePreview && (
+                  <div className="relative w-full h-32 rounded-lg overflow-hidden border border-muted-foreground/20">
+                    <img
+                      src={mealImagePreview}
+                      alt="Meal preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={clearMealImage}
+                      className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </div>
+                )}
+
+                <label htmlFor="meal-image" className="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed border-muted-foreground/30 rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+                  <div className="flex flex-col items-center justify-center py-3">
+                    <Upload className="size-4 text-muted-foreground mb-1" />
+                    <p className="text-xs text-muted-foreground text-center px-2">
+                      {mealImage ? mealImage.name : "Click or drag image"}
+                    </p>
+                  </div>
+                  <input
+                    id="meal-image"
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleMealImageChange}
+                  />
+                </label>
               </div>
 
               <div className="flex items-center gap-3 rounded-2xl bg-muted/40 p-3 ring-1 ring-foreground/5">

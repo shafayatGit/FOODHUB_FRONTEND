@@ -7,6 +7,7 @@ import type { UserRole } from "@/types/user.types";
 import type { PaginationMeta } from "@/types/api.types";
 
 const USER_MANAGEMENT_PATH = "/admin/users-management";
+const ADMIN_USERS_ENDPOINT = "/admin/users";
 type RawUser = Record<string, unknown>;
 
 function normalizeRole(role: unknown): UserRole {
@@ -106,24 +107,15 @@ export async function updateAdminUserStatus(formData: FormData) {
   }
 
   try {
-    await httpClient.patch(`/admin/users/${userId}`, { status });
+    await httpClient.patch(`${ADMIN_USERS_ENDPOINT}/${userId}`, { status });
     revalidatePath(USER_MANAGEMENT_PATH);
   } catch (error) {
     console.error(error, "From Update Admin User Status Server Action");
   }
 }
 
-export async function deleteAdminUser(formData: FormData) {
-  const userId = String(formData.get("userId") || "");
-
-  if (!userId) {
-    return;
-  }
-
-  try {
-    await httpClient.delete(`/admin/users/${userId}`);
-    revalidatePath(USER_MANAGEMENT_PATH);
-  } catch (error) {
-    console.error(error, "From Delete Admin User Server Action");
-  }
+export async function deleteUser(userId: string) {
+  console.log(`Deleting user with ID: ${userId}`); // Debug log
+  return await httpClient.delete(`${ADMIN_USERS_ENDPOINT}/${userId}`);
 }
+
