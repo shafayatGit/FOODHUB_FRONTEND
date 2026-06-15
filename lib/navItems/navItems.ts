@@ -59,9 +59,14 @@ export function getNavItemsByRole(role: string): NavSection[] {
             icon: "users",
           },
           {
-            title: "Reports",
-            href: "/admin/reports",
-            icon: "bar-chart-3",
+            title: "Orders",
+            href: "/admin/orders",
+            icon: "clipboard-list",
+          },
+          {
+            title: "Categories",
+            href: "/admin/catagory-management",
+            icon: "list-tree",
           },
         ],
       },

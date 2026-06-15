@@ -1,11 +1,10 @@
-import React from 'react'
+import UserManagementTable from "@/components/modules/Admin/UserManagementTable";
+import { getAdminUsers } from "@/services/admin-users.services";
 
-const UserManagementPage = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+const UserManagementPage = async () => {
+  const users = await getAdminUsers();
 
-export default UserManagementPage
+  return <UserManagementTable users={users} />;
+};
+
+export default UserManagementPage;

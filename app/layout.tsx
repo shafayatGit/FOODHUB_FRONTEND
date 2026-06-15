@@ -1,9 +1,10 @@
-import { Geist, Geist_Mono, Raleway } from "next/font/google"
+import { Geist_Mono, Raleway } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import QueryProviders from "@/providers/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const raleway = Raleway({subsets:['latin'],variable:'--font-sans'})
 
@@ -24,7 +25,12 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", raleway.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <QueryProviders> <ThemeProvider>{children}</ThemeProvider></QueryProviders>
+        <QueryProviders>
+          <ThemeProvider>
+            {children}
+            <Toaster richColors />
+          </ThemeProvider>
+        </QueryProviders>
       </body>
 
     </html>
