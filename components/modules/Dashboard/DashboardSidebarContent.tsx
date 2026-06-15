@@ -25,7 +25,7 @@ const DashboardSidebarContent = ({
     <div className="hidden md:flex min-h-screen w-64 flex-col border-r bg-card overflow-y-auto">
       {/* Logo / Brand */}
       <div className="flex h-16 items-center border-b px-6">
-        <Link href={dashboardHome}>
+        <Link href="/">
           <span className="text-xl font-bold text-primary">
             FoodHub
           </span>

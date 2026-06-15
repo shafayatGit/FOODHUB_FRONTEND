@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Toggle } from "@/components/ui/toggle"
+import { Button } from "@/components/ui/button"
 import AppField from "@/components/shared/Form/AppField"
 import AppSubmitButton from "@/components/shared/Form/AppSubmitButton"
 import {
@@ -197,6 +198,27 @@ export default function RegisterForm() {
             )}
           </form.Subscribe>
         </form>
+
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">
+              Or quick access
+            </span>
+          </div>
+        </div>
+
+        <Button
+          variant="outline"
+          className="w-full border-primary/20 bg-primary/5 hover:bg-primary/10 hover:text-primary"
+          onClick={() => {
+            router.push("/login");
+          }}
+        >
+          Login as Admin
+        </Button>
       </CardContent>
 
       <CardFooter className="justify-center border-t pt-4">
