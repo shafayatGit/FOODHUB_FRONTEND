@@ -54,8 +54,8 @@ export function getNavItemsByRole(role: string): NavSection[] {
             icon: "shield-check",
           },
           {
-            title: "Users",
-            href: "/admin/users",
+            title: "Users-Management",
+            href: "/admin/users-management",
             icon: "users",
           },
           {
