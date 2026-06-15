@@ -127,14 +127,14 @@ export default function RegisterForm() {
           <Toggle
             pressed={role === "CUSTOMER"}
             onClick={() => setRole("CUSTOMER")}
-            className={role === "CUSTOMER" ? "bg-primary text-white" : ""}
+            className={role === "CUSTOMER" ? "bg-primary" : ""}
           >
             Customer
           </Toggle>
           <Toggle
             pressed={role === "PROVIDER"}
             onClick={() => setRole("PROVIDER")}
-            className={role === "PROVIDER" ? "bg-primary text-white" : ""}
+            className={role === "PROVIDER" ? "bg-primary" : ""}
           >
             Provider
           </Toggle>

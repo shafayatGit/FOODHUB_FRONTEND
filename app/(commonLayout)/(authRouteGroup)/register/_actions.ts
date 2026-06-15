@@ -76,7 +76,7 @@ const createRegisterAction = async <T extends IRegisterCustomerPayload | IRegist
         
             await setCookie("role", roleOfUser, 24 * 60 * 60);
         
-            function getDefaultDashboardRoute(r: UserRole) {
+             function getDefaultDashboardRoute(r: UserRole) {
               switch (r) {
                 case "ADMIN":
                   return "/admin/dashboard";

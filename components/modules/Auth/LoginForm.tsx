@@ -159,7 +159,7 @@ const LoginForm = () => {
           </form.Subscribe>
         </form>
 
-        <div className="relative my-6">
+        {/* <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
@@ -168,9 +168,9 @@ const LoginForm = () => {
               Or continue with
             </span>
           </div>
-        </div>
+        </div> */}
 
-        <Button
+        {/* <Button
           variant="outline"
           className="w-full"
           onClick={() => {
@@ -198,7 +198,7 @@ const LoginForm = () => {
             />
           </svg>
           Sign in with Google
-        </Button>
+        </Button> */}
       </CardContent>
 
       <CardFooter className="justify-center border-t pt-4">
