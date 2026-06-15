@@ -27,6 +27,7 @@ export interface CustomerOrder {
   customer?: UserInfo;
 }
 
+
 export interface CreateOrderPayload {
   deliveryAddress: string;
   totalAmount: number;

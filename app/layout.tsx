@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/components/modules/Cart/CartProvider";
 import { UserProvider } from "@/providers/UserProvider";
 import { getUserInfo } from "@/services/auth.services";
+import type { Metadata } from "next";
 
 const raleway = Raleway({subsets:['latin'],variable:'--font-sans'})
 
@@ -15,6 +16,11 @@ const fontMono = Geist_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
 })
+export const metadata: Metadata = {
+  title: "HobbyHub",
+  description:
+    "A platform for hobbyists to connect, share, and discover new activities. Users can create profiles, join communities, and participate in events.",
+};
 
 export default async function RootLayout({
   children,
@@ -23,6 +29,7 @@ export default async function RootLayout({
 }>) {
   const userInfo = await getUserInfo();
 
+  
   return (
     <html
       lang="en"

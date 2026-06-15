@@ -71,7 +71,7 @@ export async function createCustomerOrders(
 
 export async function cancelOrder(orderId: string): Promise<{ success: boolean; message: string }> {
   try {
-    await httpClient.patch(`/orders/${orderId}/cancel`);
+    await httpClient.patch(`/orders/${orderId}/cancel`,{ status: "CANCELLED" });
     revalidatePath("/orders");
     return {
       success: true,

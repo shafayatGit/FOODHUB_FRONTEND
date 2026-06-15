@@ -29,7 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  deleteAdminUser,
+  
   deleteUser,
   updateAdminUserStatus,
 } from "@/services/admin-users.services";
