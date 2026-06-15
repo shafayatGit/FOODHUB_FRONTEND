@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { httpClient } from "@/lib/axios/httpClient";
 import type { Category } from "@/types/category.types";
+import type { PaginationMeta } from "@/types/api.types";
 
 const CATEGORY_MANAGEMENT_PATH = "/admin/catagory-management";
 type RawRecord = Record<string, unknown>;
@@ -40,14 +41,20 @@ function normalizeCategoriesPayload(payload: unknown): Category[] {
     .filter((category) => category.id !== "undefined");
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories(params?: {
+  page?: string | number;
+  limit?: string | number;
+}): Promise<{ categories: Category[]; meta?: PaginationMeta }> {
   try {
-    const response = await httpClient.get<unknown>("/categories");
+    const response = await httpClient.get<unknown>("/categories", { params });
 
-    return normalizeCategoriesPayload(response?.data);
+    return {
+      categories: normalizeCategoriesPayload(response?.data),
+      meta: (response as any)?.meta,
+    };
   } catch (error) {
     console.error(error, "From Categories Server Action");
-    return [];
+    return { categories: [] };
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { httpClient } from "@/lib/axios/httpClient";
 import type { AdminOrder, AdminOrderStatus } from "@/types/admin-order.types";
+import type { PaginationMeta } from "@/types/api.types";
 
 type RawRecord = Record<string, unknown>;
 
@@ -83,13 +84,19 @@ function normalizeOrdersPayload(payload: unknown): AdminOrder[] {
     .filter((order) => order.id !== "undefined");
 }
 
-export async function getAdminOrders(): Promise<AdminOrder[]> {
+export async function getAdminOrders(params?: {
+  page?: string | number;
+  limit?: string | number;
+}): Promise<{ orders: AdminOrder[]; meta?: PaginationMeta }> {
   try {
-    const response = await httpClient.get<unknown>("/admin/orders");
+    const response = await httpClient.get<unknown>("/admin/orders", { params });
 
-    return normalizeOrdersPayload(response?.data);
+    return {
+      orders: normalizeOrdersPayload(response?.data),
+      meta: (response as any)?.meta,
+    };
   } catch (error) {
     console.error(error, "From Admin Orders Server Action");
-    return [];
+    return { orders: [] };
   }
 }

@@ -14,6 +14,8 @@ import PublicHeaderShell from "@/components/modules/Common/PublicHeaderShell";
 import PublicUserControls from "@/components/modules/Common/PublicUserControls";
 import { getDefaultDashboardRoute } from "@/lib/authUtils";
 import { logoutAction, getUserInfo } from "@/services/auth.services";
+import { ThemeToggle } from "@/components/ui/themeToggle";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -27,12 +29,15 @@ export default async function PublicHeader() {
   return (
     <PublicHeaderShell>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-2">
-          <span className="flex size-9 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <ChefHat className="size-5" />
-          </span>
-          <span className="text-lg font-semibold tracking-normal">FoodHub</span>
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex min-w-0 items-center gap-2">
+            <span className="flex size-9 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <ChefHat className="size-5" />
+            </span>
+            <span className="text-lg font-semibold tracking-normal text-foreground group-data-[scrolled=false]/site-header:text-white transition-colors">FoodHub</span>
+          </Link>
+          <AnimatedThemeToggler fromCenter />
+        </div>
 
         <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (

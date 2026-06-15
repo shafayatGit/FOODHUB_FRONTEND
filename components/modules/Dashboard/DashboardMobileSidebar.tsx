@@ -1,5 +1,6 @@
 
 "use client";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { SheetTitle } from "@/components/ui/sheet";
@@ -8,6 +9,7 @@ import { getIconComponent } from "@/lib/navItems/iconMapper";
 import { cn } from "@/lib/utils";
 import { NavSection } from "@/types/dashboard.types";
 import { UserInfo } from "@/types/user.types";
+import { ChefHat } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,10 +28,14 @@ const DashboardMobileSidebar = ({
   return (
     <div className="flex h-full flex-col overflow-y-auto">
       {/* Logo / Brand */}
-      <div className="flex h-16 items-center border-b px-6">
-        <Link href="/">
-          <span className="text-xl font-bold text-primary">PH Healthcare</span>
-        </Link>
+      <div className="flex h-16 gap-3 items-center border-b px-6">
+        <Link href="/" className="flex min-w-0 items-center gap-2">
+            <span className="flex size-9 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
+              <ChefHat className="size-5" />
+            </span>
+            <span className="text-lg font-semibold tracking-normal text-foreground group-data-[scrolled=false]/site-header:text-white transition-colors">FoodHub</span>
+          </Link>
+        <AnimatedThemeToggler fromCenter />
       </div>
 
       <SheetTitle className="sr-only">Navigation Menu</SheetTitle>

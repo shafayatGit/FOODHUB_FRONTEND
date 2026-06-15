@@ -22,6 +22,7 @@ import {
   registerProviderSchema,
   type IRegisterPayload,
 } from "@/zod/auth.validation"
+import { handleAxiosError } from "@/lib/utils"
 import {
   IRegisterActionResult,
   registerCustomerAction,
@@ -108,8 +109,7 @@ export default function RegisterForm() {
 
         router.push("/login")
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Registration failed"
-        setServerError(message)
+        setServerError(handleAxiosError(err))
       }
     },
   })

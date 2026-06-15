@@ -14,6 +14,7 @@ import {
 import { IRegisterResponse } from "@/types/auth.types";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { setCookie } from "@/lib/cookieUtils";
+import { handleAxiosError } from "@/lib/utils";
 
 export type IRegisterActionSuccess = {
   success: true;
@@ -125,7 +126,7 @@ const createRegisterAction = async <T extends IRegisterCustomerPayload | IRegist
   } catch (error: any) {
     return {
       success: false,
-      message: `Registration failed: ${error?.message || "Unknown error"}`,
+      message: handleAxiosError(error),
     };
   }
 };

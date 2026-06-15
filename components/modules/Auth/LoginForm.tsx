@@ -20,6 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AppField from "../../shared/Form/AppField";
 import AppSubmitButton from "../../shared/Form/AppSubmitButton";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
+import { handleAxiosError } from "@/lib/utils";
 
 const LoginForm = () => {
   // const queryClient = useQueryClient();
@@ -34,6 +35,26 @@ const LoginForm = () => {
     mutationFn: (payload: ILoginPayload) => loginAction(payload, redirectPath),
   });
 
+  const handleLogin = async (value: ILoginPayload) => {
+    setServerError(null);
+    try {
+      const result = (await mutateAsync(value)) as any;
+
+      if (result && !result.success) {
+        setServerError(result.message || "Login failed. Please try again.");
+        return;
+      }
+
+      // Successful login - redirect to the appropriate dashboard
+      if (result && result.success && result.redirectPath) {
+        router.push(result.redirectPath);
+      }
+    } catch (error: any) {
+      console.error(`Login failed:`, error);
+      setServerError(handleAxiosError(error));
+    }
+  };
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -41,23 +62,7 @@ const LoginForm = () => {
     },
 
     onSubmit: async ({ value }) => {
-      setServerError(null);
-      try {
-        const result = (await mutateAsync(value)) as any;
-
-        if (result && !result.success) {
-          setServerError(result.message || "Login failed. Please try again.");
-          return;
-        }
-
-        // Successful login - redirect to the appropriate dashboard
-        if (result && result.success && result.redirectPath) {
-          router.push(result.redirectPath);
-        }
-      } catch (error: any) {
-        console.error(`Login failed:`, error);
-        setServerError(`Login failed: ${error?.message || "Unexpected error"}`);
-      }
+      await handleLogin(value);
     },
   });
   return (
@@ -174,12 +179,10 @@ const LoginForm = () => {
           className="w-full border-primary/20 bg-primary/5 hover:bg-primary/10 hover:text-primary"
           disabled={isPending}
           onClick={() =>
-            form.onSubmit({
-              value: {
-                email: "foodhubadmin@gmail.com",
-                password: "12345Am@",
-              },
-            } as any)
+            handleLogin({
+              email: "foodhubadmin@gmail.com",
+              password: "12345Am@",
+            })
           }
         >
           Login as Admin

@@ -8,6 +8,7 @@ import { setCookie } from "@/lib/cookieUtils";
 import { ApiErrorResponse } from "@/types/api.types";
 import { ILoginResponse } from "@/types/auth.types";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
+import { handleAxiosError } from "@/lib/utils";
 
 export type ILoginActionSuccess = {
   success: true;
@@ -125,16 +126,12 @@ export const loginAction = async (
     console.log(error, "error");
     return {
       success: false,
-      message: `Login failed: ${error?.message || "Unknown error"}`,
+      message: handleAxiosError(error),
     };
+  }
 
-   
-
-    }
-
-    return {
-      success: true,
-      redirectPath: targetPath,
- 
-    };
+  return {
+    success: true,
+    redirectPath: targetPath,
+  };
 };

@@ -1,6 +1,6 @@
 import MealFilters from "@/components/modules/Meals/MealFilters";
 import MealsGrid from "@/components/modules/Meals/MealsGrid";
-import PaginationBar from "@/components/modules/Meals/PaginationBar";
+import AppPagination from "@/components/shared/AppPagination";
 import { getMeals } from "@/services/meals.services";
 
 export const dynamic = "force-dynamic";
@@ -56,7 +56,7 @@ const MealsPage = async ({ searchParams }: MealsPageProps) => {
           maxPrice={currentParams.maxPrice}
         />
         <MealsGrid meals={meals} />
-        <PaginationBar meta={meta} searchParams={currentParams} />
+        {meta && <AppPagination meta={meta} />}
       </div>
     </section>
   )

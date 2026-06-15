@@ -8,6 +8,7 @@ import { Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import DashboardMobileSidebar from "./DashboardMobileSidebar";
 import UserDropdown from "./UserDropdown";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 interface DashboardNavbarProps {
   userInfo: UserInfo;
   navItems: NavSection[];
@@ -54,7 +55,8 @@ const DashboardNavbarContent = ({
         </SheetContent>
       </Sheet>
 
-      <div className="flex flex-1 justify-end">
+      <div className="flex flex-1 gap-3 justify-end">
+        
         <UserDropdown userInfo={userInfo} />
           </div>
 

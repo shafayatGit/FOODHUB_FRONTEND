@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { httpClient } from "@/lib/axios/httpClient";
 import type { AdminUser, AdminUserStatus } from "@/types/admin-user.types";
 import type { UserRole } from "@/types/user.types";
+import type { PaginationMeta } from "@/types/api.types";
 
 const USER_MANAGEMENT_PATH = "/admin/users-management";
 type RawUser = Record<string, unknown>;
@@ -78,14 +79,21 @@ function normalizeUsersPayload(payload: unknown): AdminUser[] {
     .filter((user) => user.id !== "undefined");
 }
 
-export async function getAdminUsers(): Promise<AdminUser[]> {
+export async function getAdminUsers(params?: {
+  page?: string | number;
+  limit?: string | number;
+  searchTerm?: string;
+}): Promise<{ users: AdminUser[]; meta?: PaginationMeta }> {
   try {
-    const response = await httpClient.get<unknown>("/admin/users");
+    const response = await httpClient.get<unknown>("/admin/users", { params });
 
-    return normalizeUsersPayload(response?.data);
+    return {
+      users: normalizeUsersPayload(response?.data),
+      meta: (response as any)?.meta,
+    };
   } catch (error) {
     console.error(error, "From Admin Users Server Action");
-    return [];
+    return { users: [] };
   }
 }
 
