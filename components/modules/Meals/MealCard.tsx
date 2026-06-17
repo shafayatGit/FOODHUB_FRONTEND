@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Clock, Store, Utensils } from "lucide-react";
+import { Clock, Star, Store, Utensils } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ interface MealCardProps {
 }
 
 export default function MealCard({ meal }: MealCardProps) {
+  const averageRating = meal.reviews?.length
+    ? (meal.reviews.reduce((acc, review) => acc + (review.rating || 0), 0) / meal.reviews.length).toFixed(1)
+    : null;
+
   return (
     <Card className="h-full border-0 shadow-sm ring-1 ring-foreground/5">
       <div className="relative aspect-[4/3] overflow-hidden">
@@ -38,6 +42,13 @@ export default function MealCard({ meal }: MealCardProps) {
             <Badge variant="secondary">{meal.category.name}</Badge>
           ) : null}
         </div>
+        {averageRating && (
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/80 px-2 py-1 text-xs font-medium backdrop-blur-sm">
+            <Star className="size-3 fill-primary text-primary" />
+            <span>{averageRating}</span>
+            <span className="text-muted-foreground">({meal.reviews?.length})</span>
+          </div>
+        )}
       </div>
 
       <CardHeader>

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMealById, getMeals } from "@/services/meals.services";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +94,14 @@ const SingleMealPage = async ({ params }: SingleMealPageProps) => {
                 </div>
                 <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-4">
                   <Star className="size-5 text-primary" />
-                  <span className="text-sm">{meal.reviews?.length ?? 0} reviews</span>
+                  <span className="text-sm">
+                    {meal.reviews?.length
+                      ? `${(
+                          meal.reviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
+                          meal.reviews.length
+                        ).toFixed(1)} (${meal.reviews.length} reviews)`
+                      : "No reviews yet"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-4">
                   <Clock className="size-5 text-primary" />
@@ -146,6 +154,44 @@ const SingleMealPage = async ({ params }: SingleMealPageProps) => {
             ) : null}
           </aside>
         </div>
+
+        {meal.reviews && meal.reviews.length > 0 && (
+          <section className="space-y-4">
+            <div>
+              <p className="text-sm font-medium text-primary">Feedback</p>
+              <h2 className="mt-1 text-2xl font-semibold tracking-normal">Customer Reviews</h2>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {meal.reviews.map((review, index) => (
+                <Card key={index} className="border-0 shadow-sm">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={cn(
+                            "size-3",
+                            i < (review.rating || 0)
+                              ? "fill-primary text-primary"
+                              : "fill-muted text-muted"
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      {review.comment || "No comment provided."}
+                    </p>
+                    <p className="mt-4 text-[10px] uppercase tracking-wider text-muted-foreground/60">
+                      {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : ""}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
 
         {visibleRelatedMeals.length > 0 ? (
           <section className="space-y-4">

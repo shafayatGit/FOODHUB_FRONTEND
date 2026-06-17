@@ -78,15 +78,18 @@ export default async function PublicHeader() {
                   <Link href={link.href}>{link.label}</Link>
                 </Button>
               ))}
-              <Button asChild variant="ghost" className="justify-start">
+              
+              {userInfo ? (
+                <>
+                  {
+                    userInfo.role === "CUSTOMER" && <CartLinkButton />
+                  }
+                  <Button asChild variant="ghost" className="justify-start">
                 <Link href={userInfo ? getDefaultDashboardRoute(userInfo.role) : "/login"}>
                   <LayoutDashboard className="size-4" />
                   Dashboard
                 </Link>
               </Button>
-              {userInfo ? (
-                <>
-                  <CartLinkButton />
                   <form action={logoutAction} className="mt-3">
                     <Button className="w-full" variant="outline">
                       <LogOut className="size-4" />

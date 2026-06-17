@@ -7,6 +7,7 @@ import { ArrowLeft, Clock3, MapPin, ReceiptText, Store, Utensils, X } from "luci
 
 import { formatCurrency } from "@/components/modules/Meals/meal-helpers";
 import { formatOrderDate, OrderStatusBadge } from "@/components/modules/Orders/order-ui";
+import ReviewForm from "@/components/modules/Orders/ReviewForm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -23,6 +24,7 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
   const total = order.totalAmount + order.deliveryFee;
   const [isPending, startTransition] = useTransition();
   const canCancel = order.status === "PLACED";
+  const canReview = order.status === "DELIVERED";
 
   const handleCancelOrder = () => {
     startTransition(async () => {
@@ -73,6 +75,12 @@ export default function OrderDetails({ order }: OrderDetailsProps) {
             </div>
           </div>
         </div>
+
+        {canReview && (
+          <div className="mx-auto max-w-2xl">
+            <ReviewForm mealId={order.mealId} orderId={order.id} />
+          </div>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
           <Card className="border-0 shadow-sm">
