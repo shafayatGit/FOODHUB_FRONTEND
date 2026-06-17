@@ -23,7 +23,17 @@ export default function AddToCartButton({ meal, className }: AddToCartButtonProp
     // Check if user is logged in
     if (!userInfo) {
       toast.error("Please login to add items to cart", {
-        description: "You need to be logged in to proceed with your order",
+        description: "You need to be logged in or a customer to proceed with your order",
+        action: {
+          label: "Login",
+          onClick: () => router.push("/login"),
+        },
+      });
+      return;
+    } 
+    if (userInfo?.role !== "CUSTOMER") {
+      toast.error("Only customers can add items to cart", {
+        description: "Your current role does not have permission to add items to cart. Please login with a customer account.",
         action: {
           label: "Login",
           onClick: () => router.push("/login"),

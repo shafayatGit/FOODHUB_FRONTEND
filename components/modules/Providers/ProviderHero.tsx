@@ -55,12 +55,12 @@ export default function ProviderHero({ provider }: ProviderHeroProps) {
           <MapPin className="size-5 text-primary" />
           <span className="min-w-0 truncate text-sm">{provider.address}</span>
         </div>
-        <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-3">
+        {/* <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-3">
           <Clock className="size-5 text-primary" />
           <span className="text-sm">
             {formatTime(provider.openTime)} - {formatTime(provider.closeTime)}
           </span>
-        </div>
+        </div> */}
         <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-3">
           <Utensils className="size-5 text-primary" />
           <span className="text-sm">{provider.meals?.length ?? 0} menu items</span>

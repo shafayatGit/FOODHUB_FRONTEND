@@ -29,7 +29,7 @@ export default function MealFilters({
     <form className="space-y-3 rounded-3xl bg-card p-4 shadow-sm ring-1 ring-foreground/5">
       {/* Search and Sort Row */}
       <div className="grid gap-3 md:grid-cols-[1fr_150px_auto]">
-        <div className="relative">
+        {/* <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             name="searchTerm"
@@ -37,7 +37,7 @@ export default function MealFilters({
             defaultValue={searchTerm}
             className="h-10 rounded-2xl pl-9"
           />
-        </div>
+        </div> */}
 
         <div>
           <Select name="sortBy" defaultValue={sortBy || "newest"}>
@@ -46,7 +46,7 @@ export default function MealFilters({
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
+              {/* <SelectItem value="newest">Newest</SelectItem> */}
               <SelectItem value="price-low">Price: Low to High</SelectItem>
               <SelectItem value="price-high">Price: High to Low</SelectItem>
               <SelectItem value="name-asc">Name: A to Z</SelectItem>
@@ -62,7 +62,7 @@ export default function MealFilters({
       </div>
 
       {/* Filters Row */}
-      <div className="grid gap-3 md:grid-cols-3">
+      {/* <div className="grid gap-3 md:grid-cols-3">
         <Input
           name="dietaryPreference"
           placeholder="Dietary preference (e.g., Veg, Non-Veg)"
@@ -83,7 +83,7 @@ export default function MealFilters({
           defaultValue={maxPrice}
           className="h-10 rounded-2xl"
         />
-      </div>
+      </div> */}
     </form>
   );
 }

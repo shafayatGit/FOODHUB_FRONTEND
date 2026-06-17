@@ -59,10 +59,10 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
               <MapPin className="size-3.5 shrink-0 text-primary/70" />
               <span className="line-clamp-1">{provider.address}</span>
             </div>
-            <div className="flex items-center gap-2 text-[13px] text-muted-foreground/80">
+            {/* <div className="flex items-center gap-2 text-[13px] text-muted-foreground/80">
               <Clock className="size-3.5 shrink-0 text-primary/70" />
               <span>{provider.openTime} - {provider.closeTime}</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </CardContent>
