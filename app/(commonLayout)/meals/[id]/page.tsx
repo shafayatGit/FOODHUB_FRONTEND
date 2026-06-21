@@ -61,8 +61,8 @@ const SingleMealPage = async ({ params }: SingleMealPageProps) => {
           <div className="overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-foreground/5">
             <div className="relative aspect-[16/10] min-h-[320px]">
               <Image
-                src={getMealImage(meal)}
-                alt={meal.title}
+                src={meal.imageUrl ? meal.imageUrl : getMealImage(meal)}
+          alt={meal.title}
                 fill
                 sizes="(min-width: 1024px) 70vw, 100vw"
                 className="absolute inset-0 h-full w-full object-cover"
